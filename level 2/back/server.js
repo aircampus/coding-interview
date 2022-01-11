@@ -44,20 +44,26 @@ app.post("/report", (req, res) => {
                 } else {
                   db.query(
                     "SELECT id FROM officer WHERE disponibility=1 LIMIT 1",
-                    (err, result) => {
+                    (err, resultat) => {
                       if (err) {
                         console.log(err);
                         res.status(500).send("Internal server error");
                       } else {
-                        if (result.length == 0) {
+                        if (resultat.length == 0) {
                           //INSERER REPORT quand même
+                          db.query(
+                            `INSERT INTO report (status) VALUES (1)`,
+                            (err, result) => {
+                              err ? console.log(err) : res.status(201);
+                            }
+                          );
                           res
                             .status(200)
                             .send(
                               "Votre dossier est en attente de prise en charge"
                             );
                         } else {
-                          const idOfficer = result[0].id;
+                          const idOfficer = resultat[0].id;
                           db.query(
                             `INSERT INTO report (status, id_officer) VALUES (1, ${idOfficer})`,
                             (err, result) => {
@@ -139,10 +145,19 @@ app.put("/report/:id", (req, res) => {
                   res
                     .status(500)
                     .send(
-                      "Erreur dans la mise à jour des données de la police"
+                      "Erreur dans la mise à jour de la disponibilité du policier"
                     );
                 } else {
-                  res.status(200).send(result);
+                  db.query(
+                    `UPDATE report SET id_officer=${officerId} WHERE status=1 AND id_officer IS NULL`,
+                    (err, result) => {
+                      if (err) {
+                        console.log(err);
+                      } else {
+                        res.status(200).send(result);
+                      }
+                    }
+                  );
                 }
               }
             );
