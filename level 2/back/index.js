@@ -49,6 +49,7 @@ app.post('/report', (req, res) => {
                                             }
                                             else {
                                                 if(result.length === 0) {
+                                                    // inserer report pour crée un signalement meme si aucun policier est dispo
                                                     res.status(200).send("Votre dossier a été enregistré. Votre dossier est en attente de prise en charge");
                                                 }
                                                 else {
@@ -101,7 +102,7 @@ app.get('/report', (req, res) => {
     );
 });
 
-// Requete qui va update le statut de l'enquete
+// Requete qui va update le statut de l'enquete puis mettre le statut du policier en charge de l'enquete à 1 (disponible)
 app.put('/report/:id', (req, res) => {
     const idReport = req.params.id;
     db.query(
@@ -109,9 +110,28 @@ app.put('/report/:id', (req, res) => {
             if(err)
                 console.log(err);
             else
-                res.send(result);
+            // On recupere l'id de l'officier dont on doit changer le statut
+                db.query(
+                    `SELECT id_officer FROM report INNER JOIN officer ON officer.id = report.id_officer WHERE report.id = ${idReport}`,
+                    (err, result) => {
+                        if(err)
+                            console.log(err)
+                        else {
+                            const idOfficer = result[0].id_officer;
+                            db.query(
+                                `UPDATE officer SET disponibility = 1 WHERE id = ?`, [idOfficer],
+                                (err, result) => {
+                                    if(err)
+                                        console.log(err)
+                                    else
+                                        res.status(200).send(result)
+                                }
+                            )
+                        }
+                    }
+                );
         }
-    )
+    );
 });
 
 app.listen(port, (err) => err ? console.error(`ERROR : ${err.message}`) : console.log(`Server is listening on port ${port}`));
