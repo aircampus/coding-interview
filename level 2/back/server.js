@@ -50,7 +50,12 @@ app.post("/report", (req, res) => {
                         res.status(500).send("Internal server error");
                       } else {
                         if (result.length == 0) {
-                          res.status(200).send("Votre dossier est en attente de prise en charge");
+                          //INSERER REPORT quand même
+                          res
+                            .status(200)
+                            .send(
+                              "Votre dossier est en attente de prise en charge"
+                            );
                         } else {
                           const idOfficer = result[0].id;
                           db.query(
@@ -77,13 +82,11 @@ app.post("/report", (req, res) => {
                                         adress,
                                         serialNumber,
                                       };
-                                      res
-                                        .status(201)
-                                        .send({
-                                          message:
-                                            "Dossier de signalement créé avec succès",
-                                          postReportRequest,
-                                        });
+                                      res.status(201).send({
+                                        message:
+                                          "Dossier de signalement créé avec succès",
+                                        postReportRequest,
+                                      });
                                     }
                                   }
                                 );
@@ -103,27 +106,56 @@ app.post("/report", (req, res) => {
     }
   );
 });
-//=== Voir les enquêtes en cours
 
+//=== Voir les enquêtes en cours
+app.get("/report", (req, res) => {
+  db.query("SELECT * FROM report", (err, result) => {
+    if (err) {
+      console.log(err);
+    } else {
+      res.status(200).send(result);
+    }
+  });
+});
 
 //=== Report : mise à jour du statut d'enquête
-app.post("/report/:id", (req, res) => {
-    const reportId = req.params.id
-    db.query(`UPDATE report SET status=0 WHERE id=${reportId}`, (err, result) => {
-        if (err){
-            console.log(err)
-        } else {
-            res.send(result)
+app.put("/report/:id", (req, res) => {
+  const reportId = req.params.id;
+  db.query(`UPDATE report SET status=0 WHERE id=${reportId}`, (err, result) => {
+    if (err) {
+      res.status(500).send("Erreur dans la mise à jour des données");
+    } else {
+      db.query(
+        `SELECT id_officer FROM report R INNER JOIN officer O ON O.id=id_officer WHERE R.id=${reportId}`,
+        (err, result) => {
+          if (err) {
+            console.log(err);
+          } else {
+            const officerId = result[0].id_officer;
+            db.query(
+              `UPDATE officer SET disponibility=1 WHERE id=${officerId}`,
+              (err, result) => {
+                if (err) {
+                  res
+                    .status(500)
+                    .send(
+                      "Erreur dans la mise à jour des données de la police"
+                    );
+                } else {
+                  res.status(200).send(result);
+                }
+              }
+            );
+          }
         }
-    })
-})
-
+      );
+    }
+  });
+});
 
 //=== Officer
 
-
 //=== Port
-
 app.listen(port, (err) => {
   if (err) {
     console.error(`ERROR: ${err.message}`);
