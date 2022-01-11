@@ -90,44 +90,28 @@ app.post('/report', (req, res) => {
 });
 
 // Voir le statut d'une enquête
+app.get('/report', (req, res) => {
+    db.query(
+        `SELECT * FROM report`, (err, result) => {
+            if(err)
+                console.log(err)
+            else
+                res.status(200).send(result);
+        }
+    );
+});
 
 // Requete qui va update le statut de l'enquete
-app.post('/report/:id', (req, res) => {
-    const idParams = req.params.id;
+app.put('/report/:id', (req, res) => {
+    const idReport = req.params.id;
     db.query(
-        `UPDATE `
-    )
-})
-
-/*
-app.post("/officer", (req, res) => {
-    db.query(
-        `SELECT id FROM officer WHERE disponibility = 0 LIMIT 1`, (err, result) => {
-            if(err) {
-                console.log("Error of first select : " + err)
-                res.status(500).send("Error internal server")
-            }
-            else {
-                if(result.length === 0) {
-                    res.status(200).send("Il n'y a plus de policier disponible");
-
-                }
-                else {
-                    db.query(
-                        `INSERT INTO report (status, id_officer) VALUES (1, ${result[0].id})`,
-                        (err, result) => {
-                            if(err)
-                                console.log(err)
-                            else {
-                                res.status(201).send(result);
-                            }
-                        }
-                    )
-                }
-            }
+        `UPDATE report SET status = 0 WHERE id = ${idReport}`, (err, result) => {
+            if(err)
+                console.log(err);
+            else
+                res.send(result);
         }
     )
 });
-*/
 
 app.listen(port, (err) => err ? console.error(`ERROR : ${err.message}`) : console.log(`Server is listening on port ${port}`));
