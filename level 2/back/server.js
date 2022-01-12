@@ -130,7 +130,7 @@ app.get("/report/resolved", (req, res) => {
 //=== Voir les enquêtes en cours
 app.get("/report/inProgress", (req, res) => {
   db.query(
-    "SELECT B.serial_number, R.status, O.id AS officerId FROM bike B INNER JOIN report R ON B.id = R.id_bike INNER JOIN officer O ON O.id = R.id_officer WHERE R.status=1",
+    "SELECT B.serial_number, R.status, O.id AS officerId, R.id AS reportId FROM bike B INNER JOIN report R ON B.id = R.id_bike INNER JOIN officer O ON O.id = R.id_officer WHERE R.status=1",
     (err, result) => {
       if (err) {
         res.status(500).send("Erreur dans la demande");
@@ -181,7 +181,7 @@ app.put("/report/:id", (req, res) => {
                     );
                 } else {
                   db.query(
-                    `UPDATE report SET id_officer=${officerId} WHERE status=1 AND id_officer IS NULL`,
+                    `UPDATE report SET id_officer=${officerId} WHERE status=1 AND id_officer IS NULL LIMIT 1`,
                     (err, result) => {
                       if (err) {
                         res
