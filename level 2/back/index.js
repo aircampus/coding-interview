@@ -173,7 +173,7 @@ app.put("/report/:id", (req, res) => {
                       );
                   else {
                     db.query(
-                      `UPDATE report SET id_officer = ${idOfficer} WHERE status = 1 AND id_officer IS NULL`,
+                      `UPDATE report SET id_officer = ${idOfficer} WHERE status = 1 AND id_officer IS NULL LIMIT 1`,
                       (err, result) => {
                         if (err)
                           res
