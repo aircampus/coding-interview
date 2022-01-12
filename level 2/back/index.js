@@ -15,6 +15,7 @@ app.get("/", (req, res) => {
 Requete pour crée un dossier de signalement d'un vol de vélo et qui attribut un dossier à un policier si celui-ci n'a pas de dossier
 en cours.
 */
+
 app.post("/report", (req, res) => {
   if (req.body === null || req.body === undefined)
     res.status(400).send("Veuillez saisir la totalité des champs.");
@@ -46,6 +47,7 @@ app.post("/report", (req, res) => {
                       "Erreur lors de l'enregistrement des informations dans la BDD"
                     );
                 } else {
+                  const idBike = result.insertId; // id du velo
                   db.query(
                     `SELECT id FROM officer WHERE disponibility = 1 LIMIT 1`,
                     (err, resultat) => {
@@ -55,7 +57,7 @@ app.post("/report", (req, res) => {
                       } else {
                         if (resultat.length == 0) {
                           db.query(
-                            `INSERT INTO report (status) VALUES (1)`,
+                            `INSERT INTO report (status, id_bike) VALUES (1, ${idBike})`,
                             (err, result) => {
                               if (err) console.log(err);
                               else {
@@ -71,7 +73,7 @@ app.post("/report", (req, res) => {
                         } else {
                           const idOfficer = resultat[0].id;
                           db.query(
-                            `INSERT INTO report (status, id_officer) VALUES (1, ${idOfficer})`,
+                            `INSERT INTO report (status, id_officer, id_bike) VALUES (1, ${idOfficer}, ${idBike})`,
                             (err, result) => {
                               if (err) console.log(err);
                               else {
@@ -110,13 +112,40 @@ app.post("/report", (req, res) => {
   );
 });
 
-// Voir le statut d'une enquête
-app.get("/report", (req, res) => {
-  db.query(`SELECT * FROM report`, (err, result) => {
-    if (err) console.log(err);
+// Liste des affaires en cours de traitement par un policier
+app.get("/report/inProgress", (req, res) => {
+  db.query(`SELECT bike.serial_number, report.status, officer.id AS officer_id FROM bike INNER JOIN report ON bike.id = report.id_bike
+  INNER JOIN officer ON officer.id = report.id_officer WHERE report.status = 1`, (err, result) => {
+    if (err)
+      res
+        .status(500)
+        .send("Erreur dans la recuperation des dossiers de signalement");
     else res.status(200).send(result);
   });
 });
+
+// Liste des affaires traitées et terminées
+app.get("/report/resolved", (req, res) => {
+    db.query(`SELECT bike.serial_number, report.status, officer.id AS officer_id FROM bike INNER JOIN report ON bike.id = report.id_bike
+    INNER JOIN officer ON officer.id = report.id_officer WHERE report.status = 0`, (err, result) => {
+      if (err)
+        res
+          .status(500)
+          .send("Erreur dans la recuperation des dossiers de signalement");
+      else res.status(200).send(result);
+    });
+  });
+
+// Liste des signalements en attente de traitement par un policier (dès qu'il y en aura un de disponible)
+app.get("/report/waiting", (req, res) => {
+    db.query(`SELECT B.serial_number, R.status, R.id AS report_id FROM bike B INNER JOIN report R ON B.id = R.id_bike WHERE R.status=1 AND R.id_officer IS NULL`, (err, result) => {
+      if (err)
+        res
+          .status(500)
+          .send("Erreur dans la recuperation des dossiers de signalement");
+      else res.status(200).send(result);
+    });
+  });
 
 // Requete qui va update le statut de l'enquete puis mettre le statut du policier en charge de l'enquete à 1 (disponible)
 app.put("/report/:id", (req, res) => {
@@ -131,7 +160,6 @@ app.put("/report/:id", (req, res) => {
           (err, result) => {
             if (err) console.log(err);
             else {
-              // On recupere l'id de l'officier dont on doit changer le statut
               const idOfficer = result[0].id_officer;
               db.query(
                 `UPDATE officer SET disponibility = 1 WHERE id = ?`,
@@ -147,7 +175,12 @@ app.put("/report/:id", (req, res) => {
                     db.query(
                       `UPDATE report SET id_officer = ${idOfficer} WHERE status = 1 AND id_officer IS NULL`,
                       (err, result) => {
-                        if (err) console.log(err);
+                        if (err)
+                          res
+                            .status(500)
+                            .send(
+                              "Erreur dans l'attribution d'un policier sur le dossier de signalement"
+                            );
                         else {
                           res.status(200).send(result);
                         }
