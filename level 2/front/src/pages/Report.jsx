@@ -18,12 +18,12 @@ const theme = createTheme();
 
 export default function Report() {
   const [firstname, setFirstname] = useState("");
-  const [name, setName] = useState("");
+  const [lastname, setLastname] = useState("");
   const [email, setEmail] = useState("");
   const [adress, setAdress] = useState("");
   const [serialNumber, setSerialNumber] = useState("");
 
-  console.log(firstname, name, email, adress, serialNumber);
+  console.log(firstname, lastname, email, adress, serialNumber);
 
   const handleChangeFirstname = (event) => {
     event.preventDefault();
@@ -32,7 +32,7 @@ export default function Report() {
 
   const handleChangeName = (event) => {
     event.preventDefault();
-    setName(event.target.value);
+    setLastname(event.target.value);
   };
 
   const handleChangeEmail = (event) => {
@@ -52,9 +52,23 @@ export default function Report() {
 
   const handleSubmit = (event) => {
     event.preventDefault();
+    fetch("http://localhost:3005/report", {
+      method: "POST",
+      headers: {
+        "content-type": "application/json",
+      },
+      body: JSON.stringify({
+        firstname,
+        lastname,
+        email,
+        adress,
+        serialNumber,
+      }),
+    })
+      .then((result) => {
+        console.log(result);
+      });
   };
-
-  fetch()
 
   return (
     <ThemeProvider theme={theme}>
