@@ -114,38 +114,47 @@ app.post("/report", (req, res) => {
 
 // Liste des affaires en cours de traitement par un policier
 app.get("/report/inProgress", (req, res) => {
-  db.query(`SELECT bike.serial_number, report.status, officer.id AS officer_id FROM bike INNER JOIN report ON bike.id = report.id_bike
-  INNER JOIN officer ON officer.id = report.id_officer WHERE report.status = 1`, (err, result) => {
-    if (err)
-      res
-        .status(500)
-        .send("Erreur dans la recuperation des dossiers de signalement");
-    else res.status(200).send(result);
-  });
+  db.query(
+    `SELECT bike.serial_number, report.status, officer.id AS officer_id, report.id AS reportId FROM bike INNER JOIN report ON bike.id = report.id_bike
+  INNER JOIN officer ON officer.id = report.id_officer WHERE report.status = 1`,
+    (err, result) => {
+      if (err)
+        res
+          .status(500)
+          .send("Erreur dans la recuperation des dossiers de signalement");
+      else res.status(200).send(result);
+    }
+  );
 });
 
 // Liste des affaires traitées et terminées
 app.get("/report/resolved", (req, res) => {
-    db.query(`SELECT bike.serial_number, report.status, officer.id AS officer_id FROM bike INNER JOIN report ON bike.id = report.id_bike
-    INNER JOIN officer ON officer.id = report.id_officer WHERE report.status = 0`, (err, result) => {
+  db.query(
+    `SELECT bike.serial_number, report.status, officer.id AS officer_id FROM bike INNER JOIN report ON bike.id = report.id_bike
+    INNER JOIN officer ON officer.id = report.id_officer WHERE report.status = 0`,
+    (err, result) => {
       if (err)
         res
           .status(500)
           .send("Erreur dans la recuperation des dossiers de signalement");
       else res.status(200).send(result);
-    });
-  });
+    }
+  );
+});
 
 // Liste des signalements en attente de traitement par un policier (dès qu'il y en aura un de disponible)
 app.get("/report/waiting", (req, res) => {
-    db.query(`SELECT B.serial_number, R.status, R.id AS report_id FROM bike B INNER JOIN report R ON B.id = R.id_bike WHERE R.status=1 AND R.id_officer IS NULL`, (err, result) => {
+  db.query(
+    `SELECT B.serial_number, R.status, R.id AS report_id FROM bike B INNER JOIN report R ON B.id = R.id_bike WHERE R.status=1 AND R.id_officer IS NULL`,
+    (err, result) => {
       if (err)
         res
           .status(500)
           .send("Erreur dans la recuperation des dossiers de signalement");
       else res.status(200).send(result);
-    });
-  });
+    }
+  );
+});
 
 // Requete qui va update le statut de l'enquete puis mettre le statut du policier en charge de l'enquete à 1 (disponible)
 app.put("/report/:id", (req, res) => {

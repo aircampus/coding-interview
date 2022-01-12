@@ -10,8 +10,8 @@ import FolderIcon from "@mui/icons-material/Folder";
 import DeleteIcon from "@mui/icons-material/Delete";
 
 export default function Officer() {
-  const [dense, setDense] = React.useState(false);
-  const [secondary, setSecondary] = React.useState(false);
+  const [dense, setDense] = useState(false);
+  const [secondary, setSecondary] = useState(false);
 
   const [onWaiting, setOnWaiting] = useState(false);
   const [onProgress, setOnProgress] = useState(false);
@@ -56,7 +56,6 @@ export default function Officer() {
         setResolved(result);
       });
   }, []);
-
   return (
     <div className="page">
       <h1 className="title">Strasbourg Police Bike Dept.</h1>
