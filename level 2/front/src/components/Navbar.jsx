@@ -43,13 +43,13 @@ function Navbar() {
           <li>
             <Link to="/report">
               <i className="bx bx-cycling"></i>
-              <span className="links_name">Report</span>
+              <span className="links_name">Signaler un vol</span>
             </Link>
           </li>
           <li>
             <Link to="/officer">
-              <i className="bx bx-shield-x bx-tada"></i>
-              <span className="links_name">Officer</span>
+              <i class="bx bx-folder-open"></i>
+              <span className="links_name">Enquêtes</span>
             </Link>
           </li>
         </ul>

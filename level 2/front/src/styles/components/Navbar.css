@@ -129,11 +129,12 @@
   color: rgb(255, 255, 5);
 }
 
-@media screen and (max-width: 1050px){
+
+@media screen and (max-width: 420px){
   .sidebar {
     opacity: 0.3;
   }
   .sidebar.open {
     opacity: 1;
   }
-}
+};

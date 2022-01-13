@@ -64,110 +64,111 @@ export default function Report() {
         adress,
         serialNumber,
       }),
-    })
-      .then((result) => {
-        console.log(result);
-      });
+    }).then((result) => {
+      console.log(result);
+    });
   };
 
   return (
-    <ThemeProvider theme={theme}>
+    <>
       <Navbar />
-      <Container component="main" maxWidth="xs">
-        <CssBaseline />
-        <Box
-          sx={{
-            marginTop: 8,
-            display: "flex",
-            flexDirection: "column",
-            alignItems: "center",
-          }}
-        >
-          <Avatar sx={{ m: 1, bgcolor: "secondary.main" }}>
-            <LockOutlinedIcon />
-          </Avatar>
-          <Typography component="h1" variant="h5">
-            Sign up
-          </Typography>
+      <ThemeProvider theme={theme}>
+        <Container component="main" maxWidth="xs" sx={{ position: 'relative', width: "50%" }}>
+          <CssBaseline />
           <Box
-            component="form"
-            noValidate
-            onSubmit={handleSubmit}
-            sx={{ mt: 3 }}
+            sx={{
+              marginTop: 8,
+              display: "flex",
+              flexDirection: "column",
+              alignItems: "center",
+            }}
           >
-            <Grid container spacing={2}>
-              <Grid item xs={12} sm={6}>
-                <TextField
-                  autoComplete="given-name"
-                  name="firstName"
-                  required
-                  fullWidth
-                  id="firstName"
-                  label="Prénom"
-                  autoFocus
-                  onChange={handleChangeFirstname}
-                />
-              </Grid>
-              <Grid item xs={12} sm={6}>
-                <TextField
-                  required
-                  fullWidth
-                  id="lastName"
-                  label="Nom"
-                  name="lastName"
-                  autoComplete="family-name"
-                  onChange={handleChangeName}
-                />
-              </Grid>
-              <Grid item xs={12}>
-                <TextField
-                  required
-                  fullWidth
-                  id="email"
-                  label="Email"
-                  name="email"
-                  autoComplete="email"
-                  onChange={handleChangeEmail}
-                />
-              </Grid>
-              <Grid item xs={12}>
-                <TextField
-                  required
-                  fullWidth
-                  name="adress"
-                  label="Adresse"
-                  type="adress"
-                  id="adress"
-                  autoComplete="adresse"
-                  onChange={handleChangeAdress}
-                />
-              </Grid>
-              <Grid item xs={12}>
-                <TextField
-                  required
-                  fullWidth
-                  name="serialNumber"
-                  label="Numero de série du vélo"
-                  type="serialNumber"
-                  id="serialNumber"
-                  autoComplete="0100111101111"
-                  onChange={handleChangeSerialNumber}
-                />
-              </Grid>
-            </Grid>
-            <Button
-              type="submit"
-              fullWidth
-              variant="contained"
-              sx={{ mt: 3, mb: 2 }}
+            <Avatar sx={{ m: 1, bgcolor: "secondary.main" }}>
+              <LockOutlinedIcon />
+            </Avatar>
+            <Typography component="h1" variant="h5">
+              Signaler un vol de vélo
+            </Typography>
+            <Box
+              component="form"
+              noValidate
+              onSubmit={handleSubmit}
+              sx={{ mt: 3 }}
             >
-              Enregistrer
-            </Button>
+              <Grid container spacing={2}>
+                <Grid item xs={12} sm={6}>
+                  <TextField
+                    autoComplete="given-name"
+                    name="firstName"
+                    required
+                    fullWidth
+                    id="firstName"
+                    label="Prénom"
+                    autoFocus
+                    onChange={handleChangeFirstname}
+                  />
+                </Grid>
+                <Grid item xs={12} sm={6}>
+                  <TextField
+                    required
+                    fullWidth
+                    id="lastName"
+                    label="Nom"
+                    name="lastName"
+                    autoComplete="family-name"
+                    onChange={handleChangeName}
+                  />
+                </Grid>
+                <Grid item xs={12}>
+                  <TextField
+                    required
+                    fullWidth
+                    id="email"
+                    label="Email"
+                    name="email"
+                    autoComplete="email"
+                    onChange={handleChangeEmail}
+                  />
+                </Grid>
+                <Grid item xs={12}>
+                  <TextField
+                    required
+                    fullWidth
+                    name="adress"
+                    label="Adresse"
+                    type="adress"
+                    id="adress"
+                    autoComplete="adresse"
+                    onChange={handleChangeAdress}
+                  />
+                </Grid>
+                <Grid item xs={12}>
+                  <TextField
+                    required
+                    fullWidth
+                    name="serialNumber"
+                    label="Numero de série du vélo"
+                    type="serialNumber"
+                    id="serialNumber"
+                    autoComplete="0100111101111"
+                    onChange={handleChangeSerialNumber}
+                  />
+                </Grid>
+              </Grid>
+              <Button
+                type="submit"
+                fullWidth
+                variant="contained"
+                sx={{ mt: 3, mb: 2 }}
+              >
+                Enregistrer
+              </Button>
+            </Box>
           </Box>
-        </Box>
-        <Copyright sx={{ mt: 5 }} />
-      </Container>
-    </ThemeProvider>
+          <Copyright sx={{ mt: 5 }} />
+        </Container>
+      </ThemeProvider>
+    </>
   );
 }
 
