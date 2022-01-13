@@ -9,8 +9,7 @@ import FolderIcon from "@mui/icons-material/Folder";
 import DeleteIcon from "@mui/icons-material/Delete";
 import "./officer-page.css";
 import Checkbox from "@mui/material/Checkbox";
-import ArchiveIcon from '@mui/icons-material/Archive';
-
+import ArchiveIcon from "@mui/icons-material/Archive";
 
 export default function OfficerPage() {
   const [waiting, setWaiting] = useState([]);
@@ -40,16 +39,24 @@ export default function OfficerPage() {
 
   console.log(waiting, inProgress, resolved);
 
-/*   const putMethod = {
-    method: 'PUT',
-    headers: {
-     'Content-type': 'application/json'
-    }
-   }
-   fetch(`http://localhost:3001/report/${id}`, putMethod)
-   .then(response => response.json())
-   .then(data => console.log(data))
-   .catch(err => console.log(err)) */
+  function handleArchive(id) {
+    const putMethod = {
+      method: "PUT",
+      headers: {
+        "Content-type": "application/json",
+      },
+    };
+    fetch(`http://localhost:3001/report/${id}`, putMethod)
+      .then((response) => response.json())
+      .then(() =>
+        fetch("http://localhost:3001/report/inProgress")
+          .then((reponse) => reponse.json())
+          .then((result) => {
+            setInProgress(result);
+          })
+      )
+      .catch((err) => console.log(err));
+  }
 
   return (
     <div className="page">
@@ -90,8 +97,7 @@ export default function OfficerPage() {
               {waiting.map((report) => (
                 <ListItem
                   secondaryAction={
-                    <IconButton edge="end" aria-label="delete">
-                    </IconButton>
+                    <IconButton edge="end" aria-label="delete"></IconButton>
                   }
                 >
                   <ListItemAvatar>
@@ -112,7 +118,11 @@ export default function OfficerPage() {
               {inProgress.map((report) => (
                 <ListItem
                   secondaryAction={
-                    <IconButton edge="end" aria-label="delete">
+                    <IconButton
+                      edge="end"
+                      aria-label="archive"
+                      onClick={() => handleArchive(report.reportId)}
+                    >
                       <ArchiveIcon />
                     </IconButton>
                   }
