@@ -1,6 +1,14 @@
 .page {
-  height: 100vh;
-  background-color: #0c2461;
+  background: rgb(0, 11, 24);
+  background: linear-gradient(
+    0deg,
+    rgba(0, 11, 24, 1) 0%,
+    rgba(0, 23, 45, 1) 25%,
+    rgba(0, 38, 77, 1) 50%,
+    rgba(2, 56, 110, 1) 75%,
+    rgba(0, 73, 141, 1) 100%
+  );
+  min-height: 100vh;
 }
 
 .title {
@@ -32,8 +40,15 @@ li {
   list-style: none;
 }
 
+p {
+  padding-left: 1rem;
+}
+
 @media screen and (min-width: 600px) {
   .container {
     flex-direction: row;
+  }
+  .sub-container {
+    width: 50%;
   }
 }

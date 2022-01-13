@@ -10,6 +10,9 @@ import DeleteIcon from "@mui/icons-material/Delete";
 import "./officer-page.css";
 import Checkbox from "@mui/material/Checkbox";
 import ArchiveIcon from "@mui/icons-material/Archive";
+import { grey, blueGrey } from "@mui/material/colors";
+import { Typography } from "@mui/material";
+import { Box } from "@mui/system";
 
 export default function OfficerPage() {
   const [waiting, setWaiting] = useState([]);
@@ -36,8 +39,6 @@ export default function OfficerPage() {
         setResolved(result);
       });
   }, []);
-
-  console.log(waiting, inProgress, resolved);
 
   function handleArchive(id) {
     const putMethod = {
@@ -66,102 +67,180 @@ export default function OfficerPage() {
           <h2 className="subtitle">Menu</h2>
           <p>Sélectionner une option</p>
           <ul>
-            <li>Vélos volés</li>
             <li>
-              Affaires en attente{" "}
               <Checkbox
                 onChange={(e) => setCurrent(!current)}
                 inputProps={{ "aria-label": "controlled" }}
+                sx={{
+                  color: grey[100],
+                  "&.Mui-checked": {
+                    color: grey[100],
+                  },
+                }}
               />
+              Affaires en attente
             </li>
             <li>
-              Affaires en cours{" "}
               <Checkbox
                 onChange={(e) => setProceeding(!proceeding)}
                 inputProps={{ "aria-label": "controlled" }}
+                sx={{
+                  color: grey[100],
+                  "&.Mui-checked": {
+                    color: grey[100],
+                  },
+                }}
               />
+              Affaires en cours
             </li>
             <li>
-              Affaires terminées{" "}
               <Checkbox
                 onChange={(e) => setArchive(!archive)}
                 inputProps={{ "aria-label": "controlled" }}
+                sx={{
+                  color: grey[100],
+                  "&.Mui-checked": {
+                    color: grey[100],
+                  },
+                }}
               />
+              Affaires terminées
             </li>
           </ul>
         </div>
 
         <div className="sub-container">
           {current ? (
-            <List>
-              {waiting.map((report) => (
-                <ListItem
-                  secondaryAction={
-                    <IconButton edge="end" aria-label="delete"></IconButton>
-                  }
-                >
-                  <ListItemAvatar>
-                    <Avatar>
-                      <FolderIcon />
-                    </Avatar>
-                  </ListItemAvatar>
-                  <ListItemText
-                    primary={report.serial_number}
-                    secondary="en attente"
-                  />
-                </ListItem>
-              ))}
-            </List>
+            <>
+              <Typography
+                sx={{
+                  textDecoration: "underline",
+                  fontFamily: "Courier New",
+                  fontSize: 16,
+                }}
+              >
+                Liste des dossiers en attente
+              </Typography>
+              <List>
+                {waiting.map((report) => (
+                  <ListItem
+                    secondaryAction={
+                      <IconButton edge="end" aria-label="delete"></IconButton>
+                    }
+                  >
+                    <ListItemAvatar>
+                      <Avatar sx={{ bgcolor: blueGrey[300] }}>
+                        <FolderIcon />
+                      </Avatar>
+                    </ListItemAvatar>
+                    <Box sx={{ display: "flex", flexDirection: "column" }}>
+                      <ListItemText>
+                        <Typography sx={{ fontFamily: "Courier New", fontWeight: 'bold' }}>
+                          {report.serial_number}
+                        </Typography>
+                      </ListItemText>
+                      <ListItemText>
+                        <Typography
+                          sx={{ fontSize: 10, fontFamily: "Courier New" }}
+                        >
+                          en attente
+                        </Typography>
+                      </ListItemText>
+                    </Box>
+                  </ListItem>
+                ))}
+              </List>
+            </>
           ) : null}
           {proceeding ? (
-            <List>
-              {inProgress.map((report) => (
-                <ListItem
-                  secondaryAction={
-                    <IconButton
-                      edge="end"
-                      aria-label="archive"
-                      onClick={() => handleArchive(report.reportId)}
-                    >
-                      <ArchiveIcon />
-                    </IconButton>
-                  }
-                >
-                  <ListItemAvatar>
-                    <Avatar>
-                      <FolderIcon />
-                    </Avatar>
-                  </ListItemAvatar>
-                  <ListItemText
-                    primary={report.serial_number}
-                    secondary={`en cours par l'officier matricule n°${report.officerId}`}
-                  />
-                </ListItem>
-              ))}
-            </List>
+            <>
+              <Typography
+                sx={{
+                  textDecoration: "underline",
+                  fontFamily: "Courier New",
+                  fontSize: 16,
+                }}
+              >
+                Liste des dossiers en cours de traitement
+              </Typography>
+              <List>
+                {inProgress.map((report) => (
+                  <ListItem
+                    secondaryAction={
+                      <IconButton
+                        edge="end"
+                        aria-label="archive"
+                        onClick={() => handleArchive(report.reportId)}
+                      >
+                        <ArchiveIcon sx={{ color: grey[100] }}/>
+                      </IconButton>
+                    }
+                  >
+                    <ListItemAvatar>
+                      <Avatar sx={{ bgcolor: blueGrey[500] }}>
+                        <FolderIcon />
+                      </Avatar>
+                    </ListItemAvatar>
+                    <Box sx={{ display: "flex", flexDirection: "column" }}>
+                      <ListItemText>
+                        <Typography sx={{ fontFamily: "Courier New", fontWeight: 'bold' }}>
+                          {report.serial_number}
+                        </Typography>
+                      </ListItemText>
+                      <ListItemText>
+                        <Typography
+                          sx={{ fontSize: 10, fontFamily: "Courier New" }}
+                        >{`en cours : par l'officier matricule n°${report.officerId}`}</Typography>
+                      </ListItemText>
+                    </Box>
+                  </ListItem>
+                ))}
+              </List>
+            </>
           ) : null}
           {archive ? (
-            <List>
-              {resolved.map((report) => (
-                <ListItem
-                  secondaryAction={
-                    <IconButton edge="end" aria-label="delete">
-                      <DeleteIcon />
-                    </IconButton>
-                  }
-                >
-                  <ListItemAvatar>
-                    <Avatar>
-                      <FolderIcon />
-                    </Avatar>
-                  </ListItemAvatar>
-                  <ListItemText
-                    primary={report.serial_number}
-                    secondary="archivée"
-                  />
-                </ListItem>
-              ))}
-            </List>
+            <>
+              <Typography
+                sx={{
+                  textDecoration: "underline",
+                  fontFamily: "Courier New",
+                  fontSize: 16,
+                }}
+              >
+                Liste des dossiers archivés
+              </Typography>
+              <List>
+                {resolved.map((report) => (
+                  <ListItem
+                    secondaryAction={
+                      <IconButton edge="end" aria-label="delete">
+                        <DeleteIcon sx={{ color: grey[100] }}/>
+                      </IconButton>
+                    }
+                  >
+                    <ListItemAvatar>
+                      <Avatar sx={{ bgcolor: blueGrey[700] }}>
+                        <FolderIcon />
+                      </Avatar>
+                    </ListItemAvatar>
+                    <Box sx={{ display: "flex", flexDirection: "column" }}>
+                      <ListItemText>
+                        <Typography sx={{ fontFamily: "Courier New", fontWeight: 'bold' }}>
+                          {report.serial_number}
+                        </Typography>
+                      </ListItemText>
+                      <ListItemText>
+                        <Typography
+                          sx={{ fontSize: 10, fontFamily: "Courier New" }}
+                        >
+                          archivée
+                        </Typography>
+                      </ListItemText>
+                    </Box>
+                  </ListItem>
+                ))}
+              </List>
+            </>
           ) : null}
         </div>
       </div>
