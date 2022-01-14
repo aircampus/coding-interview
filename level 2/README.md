@@ -1,63 +1,36 @@
-# Stolen Bike - Fullstack
+# Stolen Bike - Projet en ReactJS, MySQL et NodeJS
 
-## Context
-Stolen bikes are a typical problem in Strasbourg. The Police want to be more efficient in resolving stolen bike cases. They decided to build a software that can automate their processes — the software that you're going to develop.
 
-## Product Requirements
-### Back
-- [ ] Bike owners can report a stolen bike.
-- [ ] New stolen bike cases should be automatically assigned to any free police officer.
-- [ ] A police officer can only handle one stolen bike case at a time.
-- [ ] When the Police find a bike, the case is marked as resolved and the responsible police officer becomes available to take a new stolen bike case.
-- [ ] The system should be able to assign unassigned stolen bike cases automatically when a police officer becomes available.
-- [ ] Mock some bikes and 3 police officers
+## Problématique
+Les vélos volés sont un problème à Strasbourg depuis plusieurs années.
+La police a donc décidé de me solliciter pour créer un logiciel qui va simplifier la résolution des affaires et signalements des vélos volés.
 
-### Front
-- [ ] Develop the interface you think will be the more efficient (no need to describe anything, it should only be functional).
-- Requirements :
-    - [ ] One tab will display the user form
-    - [ ] One tab will display the stolen bikes and the police actions
-    - [ ] One tab will display current assignments
-- Extra: Use your prefered state manager
 
-## Your Mission
-Your task is to provide APIs and a frontend application that satisfies all requirements above.
+## Explication du code coté Front-End
 
-Please stick to the Product Requirements. You should not implement authorisation and authentication, as they are not important for the assessment. Assume everyone can make requests to any API.
+Via une barre de navigation latérale, l'utilisateur peut acceder à deux onglets :
 
-## Tech Requirements
-- Node.js
-- **Tests (quality and coverage)**
-- You are free to use any React framework, but it’s recommended that you use one that you’re good at
-- Use only SQL Database
-- Typescript is a plus
+1 - L'onglet "Signaler un vol". L'utilisateur peut signaler un vol en rentrant divers informations qui sera ensuite transmis dans la base de données.
+-> Si il y a un policier qui n'est pas sur une affaire et est donc disponible pour débuter une enquête, l'affaire lui sera automatiquement attribué et le statut du dossier sera "en cours de traitement".
+-> Si aucun policier n'est disponible : le dossier sera crée et inséré dans la base de données mais le statut du dossier sera "en attente".
 
-## Instructions
-- The challenge is on!
-- Build a performant, **clean and well-structured solution**.
-- Commit early and often. We want to be able to check your progress.
-- **Send us an email with a link to repository when you finish the assesment**.
-- Please do not spend more than 4 hours.
-- Please complete your working solution within 7 days of receiving this challenge.
+2 - L'onglet "Enquêtes". L'utilisateur peut acceder aux dossiers en selectionnant et cliquant les différents checkbox.
+Il peut acceder aux dossiers en cours, en attente, et ceux qui sont résolues.
+Pour séléctionner l'ensemble des dossiers, il faut cocher l'ensemble des checkbox.
 
-### Submission instructions
-1. Fork this repository on github.
-2. Complete the project as described below within your fork.
-3. Keep the commit history - don't squash.
-4. Push all of your changes to your fork on github and submit a pull request to this repository.
+Une affaire peut basculer de status de en cours -> résolues ou en attente -> résolues en cliquante sur l'emoticone "folder" qui se situe dans la liste des dossiers affichés.
 
-## Evaluation criteria (in order of importance)
-1. Code organization
-2. Code readability (including comments)
-3. Adherence to the tech requirements described above
-4. Commit history - structure and quality
-5. Completeness
-6. Test coverage
 
-Remarks:
-+ Use es6 or later, do not use es5
-+ Use functional programming when it is wise to do so
-+ Use fetch()
-+ Do **not** use jquery
-+ Use airbnb stylesguides for [ES6](https://github.com/airbnb/javascript),
-[react](https://github.com/airbnb/javascript/tree/master/react), and [css](https://github.com/airbnb/css)
+## Explication du code coté Back-End
+
+Il y a 3 routes coté serveur :
+
+1 - Un chemin avec une méthode POST et un path /report qui va envoyer vers la BDD toutes les informations saisises par l'utilisateur via l'onglet "Signaler un vol".
+
+2 - Un chemin avec une méthode GET et un path /report/inProgress pour récupérer la liste des affaires en cours de traitement par un policier.
+
+3 - Un chemin avec une méthode GET et un path /report/resolved pour récupérer la liste des affaires traitées et terminées.
+
+4 - Un chemin avec une méthode GET et un path /report/waiting pour récupérer la liste des signalements en attente de traitement par un policier.
+
+5 - Un chemin avec une méthode PUT /report/:id pour modifier le statut d'une enquête et qui rendra un policier disponible pour prendre une nouvelle enquête parmi la liste des dossiers de signalement qui sont en attente de traitement
