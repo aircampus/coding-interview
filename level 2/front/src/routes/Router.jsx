@@ -9,7 +9,6 @@ function Router() {
     <BrowserRouter>
       <Routes>
         <Route path="/" element={<App />} />
-        <Route path="/report" element={<Report />} />
         <Route path="/officer" element={<Officer />} />
       </Routes>
     </BrowserRouter>

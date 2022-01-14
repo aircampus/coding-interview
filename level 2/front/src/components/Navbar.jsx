@@ -36,12 +36,6 @@ function Navbar() {
         <ul className="nav-list">
           <li>
             <Link to="/">
-              <i className="bx bx-grid-alt" />
-              <span className="links_name">Dashboard</span>
-            </Link>
-          </li>
-          <li>
-            <Link to="/report">
               <i className="bx bx-cycling"></i>
               <span className="links_name">Signaler un vol</span>
             </Link>
